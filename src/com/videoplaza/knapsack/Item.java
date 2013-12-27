@@ -8,12 +8,12 @@ package com.videoplaza.knapsack;
 public class Item {
 
     private String mName;
-    private int mSize;
+    private int mWeight;
     private int mValue;
 
-    public Item (String pName, int pSize, int pValue) {
+    public Item (String pName, int pWeight, int pValue) {
         mName = pName;
-        mSize = pSize;
+        mWeight = pWeight;
         mValue = pValue;
     }
 
@@ -21,8 +21,8 @@ public class Item {
         return mName;
     }
 
-    public int getSize() {
-        return mSize;
+    public int getWeight() {
+        return mWeight;
     }
 
     public int getValue() {

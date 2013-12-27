@@ -45,9 +45,9 @@ public class Planner {
     }
 
     private static Map<String, Integer> calculateBestCampaignDistribution(CampaignsInfo pCampaignInfo) {
-        KnapsackProblemSolver tSolver = new KnapsackProblemSolver();
         List<Item> tItems = convertCampaignsToItems(pCampaignInfo.getCampaigns());
-        Map<String, Integer> tBestCampaignDistribution = tSolver.solve(pCampaignInfo.getInventory(), tItems);
+        KnapsackProblemSolver tSolver = new KnapsackProblemSolver(tItems);
+        Map<String, Integer> tBestCampaignDistribution = tSolver.solve(pCampaignInfo.getInventory());
         return tBestCampaignDistribution;
     }
 

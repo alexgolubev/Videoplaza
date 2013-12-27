@@ -19,17 +19,19 @@ public class OutputProcessor {
         int tTotalRevenue = 0;
         for (Map.Entry<String, Integer> tEntry : pCampaignDistribution.entrySet()) {
             String tCustomer = tEntry.getKey();
+            int tNumberOfCampaigns = tEntry.getValue();
+            int tRevenuePerCustomer = calculateRevenuePerCustomer(pCampaigns, tCustomer, tNumberOfCampaigns);
+            int tImpressionsPerCustomer = calculateImpressionsPerCustomer(pCampaigns, tCustomer, tNumberOfCampaigns);
+
+            tAllImpressions += tImpressionsPerCustomer;
+            tTotalRevenue += tRevenuePerCustomer;
+
             tStringBuilder.append(tCustomer);
             tStringBuilder.append(",");
-            int tNumberOfCampaigns = tEntry.getValue();
             tStringBuilder.append(tNumberOfCampaigns);
             tStringBuilder.append(",");
-            int tImpressionsPerCustomer = calculateImpressionsPerCustomer(pCampaigns, tCustomer, tNumberOfCampaigns);
-            tAllImpressions += tImpressionsPerCustomer;
             tStringBuilder.append(tImpressionsPerCustomer);
             tStringBuilder.append(",");
-            int tRevenuePerCustomer = calculateRevenuePerCustomer(pCampaigns, tCustomer, tNumberOfCampaigns);
-            tTotalRevenue += tRevenuePerCustomer;
             tStringBuilder.append(tRevenuePerCustomer);
             System.out.println(tStringBuilder.toString());
             tStringBuilder.setLength(0);
