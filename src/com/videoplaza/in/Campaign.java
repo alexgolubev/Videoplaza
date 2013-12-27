@@ -11,4 +11,21 @@ public class Campaign {
     private int mImpressions;
     private int mPrice;
 
+    public Campaign(String pCustomer, int pImpressions, int pPrice) {
+        mCustomer = pCustomer;
+        mImpressions = pImpressions;
+        mPrice = pPrice;
+    }
+
+    public String getCustomer() {
+        return mCustomer;
+    }
+
+    public int getImpressions() {
+        return mImpressions;
+    }
+
+    public int getPrice() {
+        return mPrice;
+    }
 }

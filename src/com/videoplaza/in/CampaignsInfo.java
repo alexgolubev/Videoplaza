@@ -12,6 +12,11 @@ public class CampaignsInfo {
     private int mInventory;
     private List<Campaign> mCampaigns;
 
+    public CampaignsInfo(int pInventory, List<Campaign> pCampaigns) {
+        mInventory = pInventory;
+        mCampaigns = pCampaigns;
+    }
+
     public int getInventory() {
         return mInventory;
     }

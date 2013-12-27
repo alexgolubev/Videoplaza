@@ -12,6 +12,10 @@ import java.util.Map;
 public class KnapsackProblemSolver {
 
     public Map<String, Integer> solve(int pSize, List<Item> pItems) {
-        return new HashMap<String, Integer>();
+        Map<String, Integer> tMap = new HashMap<String, Integer>();
+        for (Item tItem : pItems) {
+            tMap.put(tItem.getName(), 1);
+        }
+        return tMap;
     }
 }
