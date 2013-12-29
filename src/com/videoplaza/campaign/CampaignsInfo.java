@@ -1,6 +1,6 @@
-package com.videoplaza.in;
+package com.videoplaza.campaign;
 
-import java.util.List;
+import java.util.Set;
 
 /**
  * Information about available campaigns and monthly inventory of impressions is kept here
@@ -10,9 +10,9 @@ import java.util.List;
 public class CampaignsInfo {
 
     private int mInventory;
-    private List<Campaign> mCampaigns;
+    private Set<Campaign> mCampaigns;
 
-    public CampaignsInfo(int pInventory, List<Campaign> pCampaigns) {
+    public CampaignsInfo(int pInventory, Set<Campaign> pCampaigns) {
         mInventory = pInventory;
         mCampaigns = pCampaigns;
     }
@@ -21,7 +21,7 @@ public class CampaignsInfo {
         return mInventory;
     }
 
-    public List<Campaign> getCampaigns() {
+    public Set<Campaign> getCampaigns() {
         return mCampaigns;
     }
 }

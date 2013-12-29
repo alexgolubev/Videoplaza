@@ -1,9 +1,9 @@
-package com.videoplaza.in;
+package com.videoplaza.campaign;
 
 import java.util.List;
 
 /**
- * Factory and convenient methods for {@link com.videoplaza.in.Campaign}
+ * Factory and convenient methods for {@link Campaign}
  *
  * @author alexgolubev
  */
