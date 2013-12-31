@@ -8,7 +8,6 @@ import com.videoplaza.io.Parser;
 import com.videoplaza.knapsack.UnboundedKnapsackProblemSolver;
 
 import java.io.IOException;
-import java.util.List;
 
 /**
  * Main class for campaign selling planning
@@ -44,9 +43,8 @@ public class CampaignPlanner {
 
     private static CampaignPlan calculateBestCampaignPlan(CampaignsInfo pCampaignInfo) {
         UnboundedKnapsackProblemSolver<Campaign, CampaignPlan> tSolver = new UnboundedKnapsackProblemSolver<>();
-        CampaignPlan tBestCampaignPlan = tSolver.solve(
+        return tSolver.solve(
                 pCampaignInfo.getCampaigns(), pCampaignInfo.getInventory(), new CampaignPlan());
-        return tBestCampaignPlan;
     }
 
     private static void showResults(CampaignPlan pCampaignPlan) {
