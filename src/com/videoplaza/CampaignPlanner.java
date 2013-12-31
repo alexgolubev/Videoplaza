@@ -8,6 +8,7 @@ import com.videoplaza.io.Parser;
 import com.videoplaza.knapsack.UnboundedKnapsackProblemSolver;
 
 import java.io.IOException;
+import java.nio.file.InvalidPathException;
 
 /**
  * Main class for campaign selling planning
@@ -27,7 +28,7 @@ public class CampaignPlanner {
         try {
             tFilePath = getFilePathArgument(pArgs);
         } catch (IllegalArgumentException e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
             System.exit(1);
         }
         Parser tParser = new Parser();
@@ -35,7 +36,7 @@ public class CampaignPlanner {
         try {
             tCampaignInfo = tParser.parse(tFilePath);
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("Specified path is invalid");
             System.exit(1);
         }
         return tCampaignInfo;
@@ -54,7 +55,7 @@ public class CampaignPlanner {
 
     private static String getFilePathArgument(String[] pArgs) throws IllegalArgumentException{
         if (pArgs.length != 1) {
-            throw new IllegalArgumentException("Provided file path is incorrect");
+            throw new IllegalArgumentException("One and only one argument is expected");
         }
         return pArgs[0];
     }
