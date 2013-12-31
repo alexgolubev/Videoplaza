@@ -62,7 +62,7 @@ public class UnboundedKnapsackProblemSolver<I extends ItemIf, K extends Knapsack
 
         K tMax = tKnapsacks.get(0);
         for (K tKnapsack : tKnapsacks) {
-            if (tKnapsack.getTotalWeight() > tMax.getTotalWeight()) {
+            if (tKnapsack.getTotalValue() > tMax.getTotalValue()) {
                 tMax = tKnapsack;
             }
         }

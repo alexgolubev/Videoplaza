@@ -14,14 +14,14 @@ import java.util.Map;
 public class CampaignPlan implements KnapsackIf<CampaignPlan, Campaign> {
 
     private List<Campaign> mCampaigns;
-    private int mTotalImpressions;
+    private int mTotalRevenue;
 
     /**
      * Creates new empty plan
      */
     public CampaignPlan() {
         mCampaigns = new ArrayList<>();
-        mTotalImpressions = 0;
+        mTotalRevenue = 0;
     }
 
     /**
@@ -30,15 +30,15 @@ public class CampaignPlan implements KnapsackIf<CampaignPlan, Campaign> {
      */
     public CampaignPlan(CampaignPlan pOriginalPlan) {
         mCampaigns = new ArrayList<>(pOriginalPlan.getCampaigns());
-        mTotalImpressions = pOriginalPlan.getTotalImpressions();
+        mTotalRevenue = pOriginalPlan.getTotalRevenue();
     }
 
     public List<Campaign> getCampaigns() {
         return mCampaigns;
     }
 
-    public int getTotalImpressions() {
-        return mTotalImpressions;
+    public int getTotalRevenue() {
+        return mTotalRevenue;
     }
 
     /**
@@ -67,18 +67,13 @@ public class CampaignPlan implements KnapsackIf<CampaignPlan, Campaign> {
     public CampaignPlan put(Campaign pCampaign) {
         CampaignPlan tCampaignPlan = new CampaignPlan(this);
         tCampaignPlan.mCampaigns.add(pCampaign);
-        tCampaignPlan.mTotalImpressions += pCampaign.getWeight();
+        tCampaignPlan.mTotalRevenue += pCampaign.getRevenue();
         return tCampaignPlan;
     }
 
     @Override
-    public int getTotalWeight() {
-        return mTotalImpressions;
-    }
-
-    @Override
-    public List<Campaign> getItems() {
-        return mCampaigns;
+    public int getTotalValue() {
+        return mTotalRevenue;
     }
 
     @Override
@@ -88,16 +83,14 @@ public class CampaignPlan implements KnapsackIf<CampaignPlan, Campaign> {
 
         CampaignPlan that = (CampaignPlan) pObject;
 
-        if (mTotalImpressions != that.mTotalImpressions) return false;
-        if (mCampaigns != null ? !mCampaigns.equals(that.mCampaigns) : that.mCampaigns != null) return false;
-
-        return true;
+        if (mTotalRevenue != that.mTotalRevenue) return false;
+        return !(mCampaigns != null ? !mCampaigns.equals(that.mCampaigns) : that.mCampaigns != null);
     }
 
     @Override
     public int hashCode() {
         int tResult = mCampaigns != null ? mCampaigns.hashCode() : 0;
-        tResult = 31 * tResult + mTotalImpressions;
+        tResult = 31 * tResult + mTotalRevenue;
         return tResult;
     }
 }

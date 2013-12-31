@@ -16,12 +16,7 @@ public interface KnapsackIf<K extends KnapsackIf, T extends ItemIf> {
     public K put(T pItem);
 
     /**
-     * @return total weight of items in the knapsack
+     * @return total value of items in the knapsack
      */
-    public int getTotalWeight();
-
-    /**
-     * @return all the items currently laying in the knapsack
-     */
-    public List<T> getItems();
+    public int getTotalValue();
 }

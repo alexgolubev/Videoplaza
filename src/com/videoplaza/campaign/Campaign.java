@@ -55,9 +55,7 @@ public class Campaign implements ItemIf{
 
         if (mImpressions != tCampaign.mImpressions) return false;
         if (mRevenue != tCampaign.mRevenue) return false;
-        if (!mCustomer.equals(tCampaign.mCustomer)) return false;
-
-        return true;
+        return mCustomer.equals(tCampaign.mCustomer);
     }
 
     @Override

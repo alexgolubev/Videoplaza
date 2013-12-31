@@ -15,7 +15,7 @@ public class OutputProcessor {
     public void printResults(CampaignPlan pCampaignPlan) {
         StringBuilder tStringBuilder = new StringBuilder();
         Map<Campaign, Integer> tCampaignMap = pCampaignPlan.getNumberOfCampaigns();
-        int tTotalRevenue = 0;
+        int tTotalImpressions = 0;
         for (Map.Entry<Campaign, Integer> tEntry : tCampaignMap.entrySet()) {
             Campaign tCampaign = tEntry.getKey();
             String tCustomer = tCampaign.getCustomer();
@@ -23,7 +23,7 @@ public class OutputProcessor {
             int tRevenuePerCustomer = tCampaign.getRevenue() * tNumberOfCampaigns;
             int tImpressionsPerCustomer = tCampaign.getImpressions() * tNumberOfCampaigns;
 
-            tTotalRevenue += tRevenuePerCustomer;
+            tTotalImpressions += tImpressionsPerCustomer;
 
             tStringBuilder.append(tCustomer);
             tStringBuilder.append(",");
@@ -35,9 +35,9 @@ public class OutputProcessor {
             System.out.println(tStringBuilder.toString());
             tStringBuilder.setLength(0);
         }
-        tStringBuilder.append(pCampaignPlan.getTotalImpressions());
+        tStringBuilder.append(tTotalImpressions);
         tStringBuilder.append(",");
-        tStringBuilder.append(tTotalRevenue);
+        tStringBuilder.append(pCampaignPlan.getTotalRevenue());
         System.out.println(tStringBuilder.toString());
     }
 }
