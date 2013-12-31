@@ -19,7 +19,7 @@ public class CampaignPlanner {
 
     public static void main(String[] pArgs) {
         CampaignsInfo tCampaignInfo = getCampaignInfo(pArgs);
-        List<Campaign> tBestCampaignPlan = calculateBestCampaignPlan(tCampaignInfo);
+        CampaignPlan tBestCampaignPlan = calculateBestCampaignPlan(tCampaignInfo);
         showResults(tBestCampaignPlan);
     }
 
@@ -42,15 +42,14 @@ public class CampaignPlanner {
         return tCampaignInfo;
     }
 
-    private static List<Campaign> calculateBestCampaignPlan(CampaignsInfo pCampaignInfo) {
-        UnboundedKnapsackProblemSolver<Campaign, CampaignPlan> tSolver =
-                new UnboundedKnapsackProblemSolver<>();
+    private static CampaignPlan calculateBestCampaignPlan(CampaignsInfo pCampaignInfo) {
+        UnboundedKnapsackProblemSolver<Campaign, CampaignPlan> tSolver = new UnboundedKnapsackProblemSolver<>();
         CampaignPlan tBestCampaignPlan = tSolver.solve(
                 pCampaignInfo.getCampaigns(), pCampaignInfo.getInventory(), new CampaignPlan());
-        return tBestCampaignPlan.getCampaigns();
+        return tBestCampaignPlan;
     }
 
-    private static void showResults(List<Campaign> pCampaignPlan) {
+    private static void showResults(CampaignPlan pCampaignPlan) {
         OutputProcessor tProcessor = new OutputProcessor();
         tProcessor.printResults(pCampaignPlan);
     }

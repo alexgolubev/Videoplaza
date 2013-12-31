@@ -1,7 +1,6 @@
 package com.videoplaza.io;
 
 import com.videoplaza.campaign.Campaign;
-import com.videoplaza.campaign.Campaigns;
 import com.videoplaza.campaign.CampaignsInfo;
 
 import java.io.BufferedReader;
@@ -11,8 +10,8 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Parser for a file with information about available campaigns and monthly inventory
@@ -26,14 +25,14 @@ public class Parser {
     public CampaignsInfo parse(String pFilePath) throws IOException {
 
         int tInventory;
-        List<Campaign> tCampaigns;
+        Set<Campaign> tCampaigns;
 
         Path tPath = Paths.get(pFilePath);
         try (BufferedReader tReader = Files.newBufferedReader(tPath, ENCODING)){
             String tLine = tReader.readLine();
             tInventory = Integer.valueOf(tLine);
 
-            tCampaigns = new ArrayList<>();
+            tCampaigns = new HashSet<>();
             String tDelimiter = ",";
             while ((tLine = tReader.readLine()) != null) {
                 String[] tStringValues = tLine.split(tDelimiter);
@@ -41,7 +40,7 @@ public class Parser {
                 int tImpressions = Integer.valueOf(tStringValues[1]);
                 int tPrice = Integer.valueOf(tStringValues[2]);
 
-                Campaign tCampaign = Campaigns.newCampaign(tCustomer, tImpressions, tPrice);
+                Campaign tCampaign = new Campaign(tCustomer, tImpressions, tPrice);
                 tCampaigns.add(tCampaign);
             }
         }

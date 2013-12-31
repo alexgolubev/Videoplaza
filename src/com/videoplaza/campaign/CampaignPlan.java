@@ -3,7 +3,9 @@ package com.videoplaza.campaign;
 import com.videoplaza.knapsack.KnapsackIf;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Represents a plan for campaign
@@ -12,14 +14,14 @@ import java.util.List;
 public class CampaignPlan implements KnapsackIf<CampaignPlan, Campaign> {
 
     private List<Campaign> mCampaigns;
-    private int mTotalPrice;
+    private int mTotalImpressions;
 
     /**
      * Creates new empty plan
      */
     public CampaignPlan() {
         mCampaigns = new ArrayList<>();
-        mTotalPrice = 0;
+        mTotalImpressions = 0;
     }
 
     /**
@@ -28,15 +30,31 @@ public class CampaignPlan implements KnapsackIf<CampaignPlan, Campaign> {
      */
     public CampaignPlan(CampaignPlan pOriginalPlan) {
         mCampaigns = new ArrayList<>(pOriginalPlan.getCampaigns());
-        mTotalPrice = pOriginalPlan.getTotalPrice();
+        mTotalImpressions = pOriginalPlan.getTotalImpressions();
     }
 
     public List<Campaign> getCampaigns() {
         return mCampaigns;
     }
 
-    public int getTotalPrice() {
-        return mTotalPrice;
+    public int getTotalImpressions() {
+        return mTotalImpressions;
+    }
+
+    /**
+     * @return a map with a campaign and number of times it is represented in the plan
+     */
+    public Map<Campaign, Integer> getNumberOfCampaigns() {
+        Map<Campaign, Integer> tCampaignMap = new HashMap<>();
+        for (Campaign tCampaign : mCampaigns) {
+            if (tCampaignMap.containsKey(tCampaign)) {
+                int tNumberOfCampaigns = tCampaignMap.get(tCampaignMap);
+                tCampaignMap.put(tCampaign, ++tNumberOfCampaigns);
+            } else {
+                tCampaignMap.put(tCampaign, 1);
+            }
+        }
+        return tCampaignMap;
     }
 
     /**
@@ -49,13 +67,13 @@ public class CampaignPlan implements KnapsackIf<CampaignPlan, Campaign> {
     public CampaignPlan put(Campaign pCampaign) {
         CampaignPlan tCampaignPlan = new CampaignPlan(this);
         tCampaignPlan.mCampaigns.add(pCampaign);
-        tCampaignPlan.mTotalPrice += pCampaign.getWeight();
+        tCampaignPlan.mTotalImpressions += pCampaign.getWeight();
         return tCampaignPlan;
     }
 
     @Override
     public int getTotalWeight() {
-        return mTotalPrice;
+        return mTotalImpressions;
     }
 
     @Override
@@ -70,7 +88,7 @@ public class CampaignPlan implements KnapsackIf<CampaignPlan, Campaign> {
 
         CampaignPlan that = (CampaignPlan) pObject;
 
-        if (mTotalPrice != that.mTotalPrice) return false;
+        if (mTotalImpressions != that.mTotalImpressions) return false;
         if (mCampaigns != null ? !mCampaigns.equals(that.mCampaigns) : that.mCampaigns != null) return false;
 
         return true;
@@ -79,7 +97,7 @@ public class CampaignPlan implements KnapsackIf<CampaignPlan, Campaign> {
     @Override
     public int hashCode() {
         int tResult = mCampaigns != null ? mCampaigns.hashCode() : 0;
-        tResult = 31 * tResult + mTotalPrice;
+        tResult = 31 * tResult + mTotalImpressions;
         return tResult;
     }
 }

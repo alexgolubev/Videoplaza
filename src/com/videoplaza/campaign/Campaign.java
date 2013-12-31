@@ -11,12 +11,12 @@ public class Campaign implements ItemIf{
 
     private String mCustomer;
     private int mImpressions;
-    private int mPrice;
+    private int mRevenue;
 
-    public Campaign(String pCustomer, int pImpressions, int pPrice) {
+    public Campaign(String pCustomer, int pImpressions, int pRevenue) {
         mCustomer = pCustomer;
         mImpressions = pImpressions;
-        mPrice = pPrice;
+        mRevenue = pRevenue;
     }
 
     public String getCustomer() {
@@ -27,8 +27,8 @@ public class Campaign implements ItemIf{
         return mImpressions;
     }
 
-    public int getPrice() {
-        return mPrice;
+    public int getRevenue() {
+        return mRevenue;
     }
 
     @Override
@@ -43,7 +43,7 @@ public class Campaign implements ItemIf{
 
     @Override
     public int getValue() {
-        return mPrice;
+        return mRevenue;
     }
 
     @Override
@@ -54,7 +54,7 @@ public class Campaign implements ItemIf{
         Campaign tCampaign = (Campaign) pObject;
 
         if (mImpressions != tCampaign.mImpressions) return false;
-        if (mPrice != tCampaign.mPrice) return false;
+        if (mRevenue != tCampaign.mRevenue) return false;
         if (!mCustomer.equals(tCampaign.mCustomer)) return false;
 
         return true;
@@ -64,7 +64,7 @@ public class Campaign implements ItemIf{
     public int hashCode() {
         int tResult = mCustomer.hashCode();
         tResult = 31 * tResult + mImpressions;
-        tResult = 31 * tResult + mPrice;
+        tResult = 31 * tResult + mRevenue;
         return tResult;
     }
 }
