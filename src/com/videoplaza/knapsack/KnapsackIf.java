@@ -1,7 +1,5 @@
 package com.videoplaza.knapsack;
 
-import java.util.List;
-
 /**
  * Interface to represent a knapsack with items in it
  * @author alexgolubev

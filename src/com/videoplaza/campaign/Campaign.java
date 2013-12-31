@@ -32,18 +32,8 @@ public class Campaign implements ItemIf{
     }
 
     @Override
-    public String getName() {
-        return mCustomer;
-    }
-
-    @Override
     public int getWeight() {
         return mImpressions;
-    }
-
-    @Override
-    public int getValue() {
-        return mRevenue;
     }
 
     @Override
