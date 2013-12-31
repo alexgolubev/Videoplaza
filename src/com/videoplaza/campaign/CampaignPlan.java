@@ -48,7 +48,7 @@ public class CampaignPlan implements KnapsackIf<CampaignPlan, Campaign> {
         Map<Campaign, Integer> tCampaignMap = new HashMap<>();
         for (Campaign tCampaign : mCampaigns) {
             if (tCampaignMap.containsKey(tCampaign)) {
-                int tNumberOfCampaigns = tCampaignMap.get(tCampaignMap);
+                int tNumberOfCampaigns = tCampaignMap.get(tCampaign);
                 tCampaignMap.put(tCampaign, ++tNumberOfCampaigns);
             } else {
                 tCampaignMap.put(tCampaign, 1);
