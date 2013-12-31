@@ -37,6 +37,11 @@ public class Campaign implements ItemIf{
     }
 
     @Override
+    public int getValue() {
+        return mRevenue;
+    }
+
+    @Override
     public boolean equals(Object pObject) {
         if (this == pObject) return true;
         if (pObject == null || getClass() != pObject.getClass()) return false;

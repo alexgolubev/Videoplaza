@@ -33,6 +33,10 @@ public class UnboundedKnapsackProblemSolver<I extends ItemIf, K extends Knapsack
 
     private K calculateMaxValueKnapsack(int pMaxWeight) {
 
+        if (pMaxWeight == 0) {
+            return mEmptyKnapsack;
+        }
+
         if (mCachedResults.containsKey(pMaxWeight)) {
             return mCachedResults.get(pMaxWeight);
         }
@@ -43,7 +47,7 @@ public class UnboundedKnapsackProblemSolver<I extends ItemIf, K extends Knapsack
         for (I tItem : mItems) {
             int tSmallerKnapsackMaxWeight = pMaxWeight - tItem.getWeight();
             K tSmallerKnapsack;
-            if (tSmallerKnapsackMaxWeight > 0) {
+            if (tSmallerKnapsackMaxWeight >= 0) {
                 tSmallerKnapsack = calculateMaxValueKnapsack(tSmallerKnapsackMaxWeight);
                 K tMaxKnapsack = tSmallerKnapsack.put(tItem);
                 tSmallerKnapsacks.add(tMaxKnapsack);
