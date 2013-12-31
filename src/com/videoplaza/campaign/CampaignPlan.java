@@ -59,7 +59,7 @@ public class CampaignPlan implements KnapsackIf<CampaignPlan, Campaign> {
 
     /**
      *
-     * Adds an campaign to the plan. Recalculates total price.
+     * Adds an campaign to the plan. Recalculates total revenue.
      * @param pCampaign an item to put in knapsack
      * @return a new copy of a campaign plan with a new campaign in it
      */

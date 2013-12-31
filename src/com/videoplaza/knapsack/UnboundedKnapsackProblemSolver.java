@@ -4,6 +4,8 @@ import java.util.*;
 
 /**
  * Class that helps to solve knapsack problem
+ * @param <I> type of items
+ * @param <K> type of knapsack
  *
  * @author alexgolubev
  */
@@ -43,7 +45,6 @@ public class UnboundedKnapsackProblemSolver<I extends ItemIf, K extends Knapsack
             K tSmallerKnapsack;
             if (tSmallerKnapsackMaxWeight > 0) {
                 tSmallerKnapsack = calculateMaxValueKnapsack(tSmallerKnapsackMaxWeight);
-                // Creating a new knapsack not to mess up smaller ones since they can be used in further calculations
                 K tMaxKnapsack = tSmallerKnapsack.put(tItem);
                 tSmallerKnapsacks.add(tMaxKnapsack);
             }
