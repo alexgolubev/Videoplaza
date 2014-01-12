@@ -30,7 +30,9 @@ public class UnboundedKnapsackProblemSolver<I extends ItemIf, K extends Knapsack
         mItems = pItems;
         for (int i = 0; i < pKnapsackSize + 1; i++) {
             calculateMaxValueKnapsack(i);
-            System.out.println(i);
+            if (i % 1000 == 0) {
+                System.out.println(i);
+            }
         }
         return mCachedResults.get(pKnapsackSize);
     }
@@ -38,33 +40,36 @@ public class UnboundedKnapsackProblemSolver<I extends ItemIf, K extends Knapsack
     private void calculateMaxValueKnapsack(int pMaxWeight) {
         // Creating a list for each of the variants when we take an item and calculate the best
         // weight distribution for a remainder of the knapsack
-        List<K> tSmallerKnapsacks = new ArrayList<>();
+        Map<K, I> tSmallerKnapsacks = new HashMap<>();
         for (I tItem : mItems) {
             int tSmallerKnapsackMaxWeight = pMaxWeight - tItem.getWeight();
             K tSmallerKnapsack;
             if (tSmallerKnapsackMaxWeight >= 0) {
                 tSmallerKnapsack = mCachedResults.get(tSmallerKnapsackMaxWeight);
-                K tMaxKnapsack = tSmallerKnapsack.put(tItem);
-                tSmallerKnapsacks.add(tMaxKnapsack);
+                tSmallerKnapsacks.put(tSmallerKnapsack, tItem);
             }
         }
 
-        K tResult = getMaxValueKnapsack(tSmallerKnapsacks);
+        K tMaxValueKnapsack = getMaxValueKnapsack(tSmallerKnapsacks);
         // Caching the results to speed up the algorithm. This is the essence of dynamic programming principle.
-        mCachedResults.put(pMaxWeight, tResult); // Dynamic programming is applied here
+        mCachedResults.put(pMaxWeight, tMaxValueKnapsack); // Dynamic programming is applied here
     }
 
-    private K getMaxValueKnapsack(List<K> tKnapsacks) {
+    private K getMaxValueKnapsack(Map<K, I> tKnapsacks) {
         if (tKnapsacks == null || tKnapsacks.size() == 0) {
             return mEmptyKnapsack;
         }
 
-        K tMax = tKnapsacks.get(0);
-        for (K tKnapsack : tKnapsacks) {
-            if (tKnapsack.getTotalValue() > tMax.getTotalValue()) {
+        Set<Map.Entry<K,I>> tKnapsackSet = tKnapsacks.entrySet();
+        Map.Entry<K, I> tMax = null;
+        int tMaxValue = -1;
+        for (Map.Entry<K, I> tKnapsack : tKnapsackSet) {
+            int tKnapsackValue = tKnapsack.getKey().getTotalValue() + tKnapsack.getValue().getValue();
+            if (tKnapsackValue > tMaxValue) {
                 tMax = tKnapsack;
+                tMaxValue = tKnapsackValue;
             }
         }
-        return tMax;
+        return tMax.getKey().put(tMax.getValue());
     }
 }
