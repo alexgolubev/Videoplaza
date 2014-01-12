@@ -28,19 +28,14 @@ public class UnboundedKnapsackProblemSolver<I extends ItemIf, K extends Knapsack
     public K solve(Set<I> pItems, int pKnapsackSize, K pEmptyKnapsack) {
         mEmptyKnapsack = pEmptyKnapsack;
         mItems = pItems;
-        return calculateMaxValueKnapsack(pKnapsackSize);
+        for (int i = 0; i < pKnapsackSize + 1; i++) {
+            calculateMaxValueKnapsack(i);
+            System.out.println(i);
+        }
+        return mCachedResults.get(pKnapsackSize);
     }
 
-    private K calculateMaxValueKnapsack(int pMaxWeight) {
-
-        if (pMaxWeight == 0) {
-            return mEmptyKnapsack;
-        }
-
-        if (mCachedResults.containsKey(pMaxWeight)) {
-            return mCachedResults.get(pMaxWeight);
-        }
-
+    private void calculateMaxValueKnapsack(int pMaxWeight) {
         // Creating a list for each of the variants when we take an item and calculate the best
         // weight distribution for a remainder of the knapsack
         List<K> tSmallerKnapsacks = new ArrayList<>();
@@ -48,7 +43,7 @@ public class UnboundedKnapsackProblemSolver<I extends ItemIf, K extends Knapsack
             int tSmallerKnapsackMaxWeight = pMaxWeight - tItem.getWeight();
             K tSmallerKnapsack;
             if (tSmallerKnapsackMaxWeight >= 0) {
-                tSmallerKnapsack = calculateMaxValueKnapsack(tSmallerKnapsackMaxWeight);
+                tSmallerKnapsack = mCachedResults.get(tSmallerKnapsackMaxWeight);
                 K tMaxKnapsack = tSmallerKnapsack.put(tItem);
                 tSmallerKnapsacks.add(tMaxKnapsack);
             }
@@ -57,7 +52,6 @@ public class UnboundedKnapsackProblemSolver<I extends ItemIf, K extends Knapsack
         K tResult = getMaxValueKnapsack(tSmallerKnapsacks);
         // Caching the results to speed up the algorithm. This is the essence of dynamic programming principle.
         mCachedResults.put(pMaxWeight, tResult); // Dynamic programming is applied here
-        return tResult;
     }
 
     private K getMaxValueKnapsack(List<K> tKnapsacks) {
