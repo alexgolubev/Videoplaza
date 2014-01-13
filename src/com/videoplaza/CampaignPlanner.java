@@ -1,6 +1,7 @@
 package com.videoplaza;
 
 import com.videoplaza.campaign.Campaign;
+import com.videoplaza.campaign.CampaignPlanFactory;
 import com.videoplaza.campaign.CampaignPlan;
 import com.videoplaza.campaign.CampaignsInfo;
 import com.videoplaza.io.OutputProcessor;
@@ -74,8 +75,7 @@ public class CampaignPlanner {
         UnboundedKnapsackProblemSolver<Campaign, CampaignPlan> tSolver = new UnboundedKnapsackProblemSolver<>();
         setTimer(tSolver);
         CampaignPlan tCampaignPlan = tSolver.solve(
-                pCampaignInfo.getCampaigns(), new CampaignPlan[pCampaignInfo.getInventory() + 1],
-                new CampaignPlan(pCampaignInfo));
+                pCampaignInfo.getCampaigns(), pCampaignInfo.getInventory(), new CampaignPlanFactory(pCampaignInfo));
         stopTimer();
         System.out.print(mCleanString);
         return tCampaignPlan;

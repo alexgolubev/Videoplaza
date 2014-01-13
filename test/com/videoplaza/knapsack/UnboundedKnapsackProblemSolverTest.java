@@ -29,7 +29,7 @@ public class UnboundedKnapsackProblemSolverTest {
         Item tItem = new Item(1, 1);
         mItems[0] = tItem;
 
-        Knapsack tSolution = mSolver.solve(mItems, new Knapsack[4], mEmptyKnapsack);
+        Knapsack tSolution = mSolver.solve(mItems, 3, new KnapsackFactory());
         Assert.assertEquals(3, tSolution.getTotalValue());
     }
 
@@ -39,7 +39,7 @@ public class UnboundedKnapsackProblemSolverTest {
         Item tItem = new Item(2, 1);
         mItems[0] = tItem;
 
-        Knapsack tSolution = mSolver.solve(mItems, new Knapsack[6], mEmptyKnapsack);
+        Knapsack tSolution = mSolver.solve(mItems, 5, new KnapsackFactory());
         Assert.assertEquals(2, tSolution.getTotalValue());
     }
 
@@ -53,7 +53,7 @@ public class UnboundedKnapsackProblemSolverTest {
         tItem = new Item(5, 53);
         mItems[2] = tItem;
 
-        Knapsack tSolution = mSolver.solve(mItems, new Knapsack[10], mEmptyKnapsack);
+        Knapsack tSolution = mSolver.solve(mItems, 9, new KnapsackFactory());
         Assert.assertEquals(94, tSolution.getTotalValue()); // one of each type
     }
 
@@ -65,21 +65,13 @@ public class UnboundedKnapsackProblemSolverTest {
         tItem = new Item(5, 63);
         mItems[1] = tItem;
 
-        Knapsack tSolution = mSolver.solve(mItems, new Knapsack[10], mEmptyKnapsack);
+        Knapsack tSolution = mSolver.solve(mItems, 9, new KnapsackFactory());
         Assert.assertEquals(94, tSolution.getTotalValue()); // one of each type
     }
 
-    class Knapsack implements KnapsackIf<Knapsack, Item> {
+    class Knapsack implements KnapsackIf {
 
         List<Item> mItems = new ArrayList<>();
-
-        @Override
-        public Knapsack put(Item pItem) {
-            Knapsack tNewKnapsack = new Knapsack();
-            tNewKnapsack.mItems = new ArrayList<>(this.mItems);
-            tNewKnapsack.mItems.add(pItem);
-            return tNewKnapsack;
-        }
 
         @Override
         public int getTotalValue() {
@@ -109,6 +101,27 @@ public class UnboundedKnapsackProblemSolverTest {
         @Override
         public int getValue() {
             return mValue;
+        }
+    }
+
+    class KnapsackFactory implements KnapsackFactoryIf<Knapsack, Item> {
+
+        @Override
+        public Knapsack newEmptyKnapsack() {
+            return new Knapsack();
+        }
+
+        @Override
+        public Knapsack[] newKnapsackArray(int pSize) {
+            return new Knapsack[pSize];
+        }
+
+        @Override
+        public Knapsack newKnapsackWithItem(Knapsack pOriginalKnapsack, Item pItem) {
+            Knapsack tNewKnapsack = new Knapsack();
+            tNewKnapsack.mItems = new ArrayList<>(pOriginalKnapsack.mItems);
+            tNewKnapsack.mItems.add(pItem);
+            return tNewKnapsack;
         }
     }
 

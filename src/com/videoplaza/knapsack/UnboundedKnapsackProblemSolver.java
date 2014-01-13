@@ -9,7 +9,7 @@ import java.util.*;
  *
  * @author alexgolubev
  */
-public class UnboundedKnapsackProblemSolver<I extends ItemIf, K extends KnapsackIf<K, I>> {
+public class UnboundedKnapsackProblemSolver<I extends ItemIf, K extends KnapsackIf> {
 
     // Here the results that are already calculated once are saved. So we can reuse them.
     // Index represents the size of a knapsack result is calculated for.
@@ -19,43 +19,43 @@ public class UnboundedKnapsackProblemSolver<I extends ItemIf, K extends Knapsack
     // It is set of tuples in fact.
     private Map<K, I> mSmallerKnapsacks = new HashMap<>();
     // Special case
-    private K mEmptyKnapsack;
+    private KnapsackFactoryIf<K, I> mKnapsackFactory;
     // All available item types
     private I[] mItems;
     // No progress from the beginning
     private int mProgress = 0;
     boolean mIsSolving = false;
     private int mMaxItemWeight;
-    private int mKnapsackSize;
+    private int mAdjustedKnapsackSize;
     private int mWeightGcd;
 
     /**
      * Solves unbounded knapsack problem for a given knapsack size and available items
-     * @param pItems set of available item types
-     * @param pKnapsackArray array of knapsacks used for caching results
-     * @param pEmptyKnapsack empty knapsack to fill in
+     * @param pItems array of available item types
+     * @param pKnapsackSize array of knapsacks used for caching results
+     * @param pKnapsackFactory factory to produce knapsacks
      * @return a knapsack full of items with maximum total value
      */
-    public K solve(I[] pItems, K[] pKnapsackArray, K pEmptyKnapsack) {
-        initialize(pItems, pKnapsackArray, pEmptyKnapsack);
+    public K solve(I[] pItems, int pKnapsackSize, KnapsackFactoryIf<K, I> pKnapsackFactory) {
+        initialize(pItems, pKnapsackSize, pKnapsackFactory);
         mIsSolving = true;
 
-        for (int i = 0; i <= mKnapsackSize; i++) {
+        for (int i = 0; i <= mAdjustedKnapsackSize; i++) {
             synchronized (this) {
                 mProgress = i; // to keep track of the progress
             }
             calculateMaxValueKnapsack(i);
         }
         mIsSolving = false;
-        return mResults[mKnapsackSize];
+        return mResults[mAdjustedKnapsackSize];
     }
 
-    private void initialize(I[] pItems, K[] pKnapsackArray, K pEmptyKnapsack) {
-        mEmptyKnapsack = pEmptyKnapsack;
+    private void initialize(I[] pItems, int pKnapsackSize, KnapsackFactoryIf<K, I> pKnapsackFactory) {
+        mKnapsackFactory = pKnapsackFactory;
         mItems = pItems;
         calculateGcdOfWeights(pItems);
-        mResults = pKnapsackArray;
-        mKnapsackSize = (mResults.length - 1) / mWeightGcd;
+        mAdjustedKnapsackSize = pKnapsackSize / mWeightGcd;
+        mResults = mKnapsackFactory.newKnapsackArray(mAdjustedKnapsackSize + 1);
         mMaxItemWeight = calculateMaxItemWeight();
     }
 
@@ -74,7 +74,7 @@ public class UnboundedKnapsackProblemSolver<I extends ItemIf, K extends Knapsack
             if (tMax < tWeight &&
                     // we do not care about items bigger than knapsack anyway.
                     // But they can prevent the algorithm from cleaning unnecessary results.
-                    tWeight <= mKnapsackSize) {
+                    tWeight <= mAdjustedKnapsackSize) {
                 tMax = tWeight;
             }
         }
@@ -88,7 +88,7 @@ public class UnboundedKnapsackProblemSolver<I extends ItemIf, K extends Knapsack
     public double getProgress() {
         if (mIsSolving) {
             synchronized (this) {
-                return (double) mProgress / mKnapsackSize * 100;
+                return (double) mProgress / mAdjustedKnapsackSize * 100;
             }
         }
         return 0.0;
@@ -120,7 +120,7 @@ public class UnboundedKnapsackProblemSolver<I extends ItemIf, K extends Knapsack
 
     private K getMaxValueKnapsack() {
         if (mSmallerKnapsacks == null || mSmallerKnapsacks.size() == 0) {
-            return mEmptyKnapsack;
+            return mKnapsackFactory.newEmptyKnapsack();
         }
 
         Set<Map.Entry<K,I>> tKnapsackItemCombinations = mSmallerKnapsacks.entrySet();
@@ -137,7 +137,6 @@ public class UnboundedKnapsackProblemSolver<I extends ItemIf, K extends Knapsack
         }
         K tMaxCombinationKnapsack = tMaxCombination.getKey();
         I tMaxCombinationItem = tMaxCombination.getValue();
-        K tMaxValueKnapsack = tMaxCombinationKnapsack.put(tMaxCombinationItem);
-        return tMaxValueKnapsack;
+        return mKnapsackFactory.newKnapsackWithItem(tMaxCombinationKnapsack, tMaxCombinationItem);
     }
 }
