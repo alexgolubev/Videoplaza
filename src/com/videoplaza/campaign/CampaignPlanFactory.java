@@ -34,7 +34,7 @@ public class CampaignPlanFactory implements KnapsackFactoryIf<CampaignPlan, Camp
     @Override
     public CampaignPlan newKnapsackWithItem(CampaignPlan pOriginalKnapsack, Campaign pItem) {
         CampaignPlan tCampaignPlan = getCopyOf(pOriginalKnapsack);
-        addCampaign(tCampaignPlan, pItem);
+        tCampaignPlan.addCampaign(pItem);
         return tCampaignPlan;
     }
 
@@ -50,21 +50,5 @@ public class CampaignPlanFactory implements KnapsackFactoryIf<CampaignPlan, Camp
         tCampaignPlan.mTotalRevenue = pOriginalCampaignPlan.getTotalRevenue();
         tCampaignPlan.mCampaignsInfo = mCampaignsInfo;
         return tCampaignPlan;
-    }
-
-    /**
-     * Adds campaign to the campaign plan
-     * @param pCampaignPlan campaign plan to add to
-     * @param pCampaign campaign to add
-     */
-    private void addCampaign(CampaignPlan pCampaignPlan, Campaign pCampaign) {
-        Campaign[] tCampaigns = pCampaignPlan.mCampaignsInfo.getCampaigns();
-        for (int i = 0; i < tCampaigns.length; i++) {
-            if (tCampaigns[i].equals(pCampaign)) {
-                pCampaignPlan.mCampaignNumbers[i]++;
-                break;
-            }
-        }
-        pCampaignPlan.mTotalRevenue += pCampaign.getRevenue();
     }
 }

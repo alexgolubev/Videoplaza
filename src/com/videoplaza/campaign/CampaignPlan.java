@@ -35,6 +35,21 @@ public class CampaignPlan implements KnapsackIf {
         return tCampaignIntegerMap;
     }
 
+    /**
+     * Adds campaign to the campaign plan
+     * @param pCampaign campaign to add
+     */
+    public void addCampaign(Campaign pCampaign) {
+        Campaign[] tCampaigns = mCampaignsInfo.getCampaigns();
+        for (int i = 0; i < tCampaigns.length; i++) {
+            if (tCampaigns[i].equals(pCampaign)) {
+                mCampaignNumbers[i]++;
+                break;
+            }
+        }
+        mTotalRevenue += pCampaign.getRevenue();
+    }
+
     @Override
     public int getTotalValue() {
         return mTotalRevenue;
@@ -60,6 +75,6 @@ public class CampaignPlan implements KnapsackIf {
     }
 
     public int[] getCampaignNumbers() {
-        return mCampaignNumbers;
+        return Arrays.copyOf(mCampaignNumbers, mCampaignNumbers.length);
     }
 }

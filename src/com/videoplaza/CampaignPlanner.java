@@ -20,8 +20,8 @@ import java.util.TimerTask;
  */
 public class CampaignPlanner {
 
-    public static Timer mTimer = new Timer();
-    public static TimerTask mTimerTask;
+    private static Timer mTimer = new Timer();
+    private static TimerTask mTimerTask;
     private static DecimalFormat mFormat = new DecimalFormat("#.##");
     private static final int cTimerInterval = 1000;
     private static long mStartTime;

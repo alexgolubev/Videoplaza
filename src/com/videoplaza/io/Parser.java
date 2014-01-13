@@ -31,6 +31,9 @@ public class Parser {
         Path tPath = Paths.get(pFilePath);
         try (BufferedReader tReader = Files.newBufferedReader(tPath, ENCODING)){
             String tLine = tReader.readLine();
+            if (tLine == null) {
+                throw new IOException("Corrupt file!");
+            }
             tInventory = Integer.valueOf(tLine);
 
             tCampaigns = new HashSet<>();
