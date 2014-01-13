@@ -8,7 +8,9 @@ import com.videoplaza.io.Parser;
 import com.videoplaza.knapsack.UnboundedKnapsackProblemSolver;
 
 import java.io.IOException;
-import java.nio.file.InvalidPathException;
+import java.text.DecimalFormat;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Main class for campaign selling planning
@@ -17,10 +19,36 @@ import java.nio.file.InvalidPathException;
  */
 public class CampaignPlanner {
 
+    public static Timer mTimer = new Timer();
+    public static TimerTask mTimerTask;
+    private static DecimalFormat mFormat = new DecimalFormat("#.##");
+    private static final int cTimerInterval = 1000;
+    private static long mStartTime;
+    private static String mCleanString = "                                            \r";
+
     public static void main(String[] pArgs) {
         CampaignsInfo tCampaignInfo = getCampaignInfo(pArgs);
         CampaignPlan tBestCampaignPlan = calculateBestCampaignPlan(tCampaignInfo);
         showResults(tBestCampaignPlan);
+    }
+
+    private static void setTimer(final UnboundedKnapsackProblemSolver pSolver) {
+        mTimerTask = new TimerTask() {
+            @Override
+            public void run() {
+                double tProgress = pSolver.getProgress();
+                long tTimePassed = (System.currentTimeMillis() - mStartTime) / 1000;
+                String tProgressString =
+                        "Thinking... " + mFormat.format(tProgress) + "% completed in " + tTimePassed + " seconds";
+                System.out.print(mCleanString + tProgressString + "\r");
+            }
+        };
+        mStartTime = System.currentTimeMillis();
+        mTimer.schedule(mTimerTask, 0, cTimerInterval);
+    }
+
+    private static void stopTimer() {
+        mTimer.cancel();
     }
 
     private static CampaignsInfo getCampaignInfo(String[] pArgs) {
@@ -44,8 +72,13 @@ public class CampaignPlanner {
 
     private static CampaignPlan calculateBestCampaignPlan(CampaignsInfo pCampaignInfo) {
         UnboundedKnapsackProblemSolver<Campaign, CampaignPlan> tSolver = new UnboundedKnapsackProblemSolver<>();
-        return tSolver.solve(
-                pCampaignInfo.getCampaigns(), pCampaignInfo.getInventory(), new CampaignPlan());
+        setTimer(tSolver);
+        CampaignPlan tCampaignPlan = tSolver.solve(
+                pCampaignInfo.getCampaigns(), new CampaignPlan[pCampaignInfo.getInventory() + 1],
+                new CampaignPlan(pCampaignInfo));
+        stopTimer();
+        System.out.print(mCleanString);
+        return tCampaignPlan;
     }
 
     private static void showResults(CampaignPlan pCampaignPlan) {

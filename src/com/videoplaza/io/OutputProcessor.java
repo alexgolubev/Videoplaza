@@ -14,7 +14,7 @@ public class OutputProcessor {
 
     public void printResults(CampaignPlan pCampaignPlan) {
         StringBuilder tStringBuilder = new StringBuilder();
-        Map<Campaign, Integer> tCampaignMap = pCampaignPlan.getNumberOfCampaigns();
+        Map<Campaign, Integer> tCampaignMap = pCampaignPlan.getCampaigns();
         int tTotalImpressions = 0;
         for (Map.Entry<Campaign, Integer> tEntry : tCampaignMap.entrySet()) {
             Campaign tCampaign = tEntry.getKey();

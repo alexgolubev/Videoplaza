@@ -2,25 +2,27 @@ package com.videoplaza.campaign;
 
 import com.videoplaza.knapsack.KnapsackIf;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
- * Represents a plan for campaign
+ * Represents a plan for campaign. Should be light-weight object since a lot of them are created for
+ * resolving the planning problem.
  * @author alexgolubev
  */
 public class CampaignPlan implements KnapsackIf<CampaignPlan, Campaign> {
 
-    private List<Campaign> mCampaigns;
+    private final CampaignsInfo mCampaignsInfo;
+    private int[] mCampaignNumbers;
     private int mTotalRevenue;
 
     /**
      * Creates new empty plan
      */
-    public CampaignPlan() {
-        mCampaigns = new ArrayList<>();
+    public CampaignPlan(CampaignsInfo pCampaignsInfo) {
+        mCampaignsInfo = pCampaignsInfo;
+        mCampaignNumbers = new int[mCampaignsInfo.getCampaigns().length];
         mTotalRevenue = 0;
     }
 
@@ -29,12 +31,10 @@ public class CampaignPlan implements KnapsackIf<CampaignPlan, Campaign> {
      * @param pOriginalPlan a plan to copy from
      */
     public CampaignPlan(CampaignPlan pOriginalPlan) {
-        mCampaigns = new ArrayList<>(pOriginalPlan.getCampaigns());
+        int[] tOriginalCampaigns = pOriginalPlan.getCampaignNumbers();
+        mCampaignNumbers = Arrays.copyOf(tOriginalCampaigns, tOriginalCampaigns.length);
         mTotalRevenue = pOriginalPlan.getTotalRevenue();
-    }
-
-    public List<Campaign> getCampaigns() {
-        return mCampaigns;
+        mCampaignsInfo = pOriginalPlan.mCampaignsInfo;
     }
 
     public int getTotalRevenue() {
@@ -44,17 +44,13 @@ public class CampaignPlan implements KnapsackIf<CampaignPlan, Campaign> {
     /**
      * @return a map with a campaign and number of times it is represented in the plan
      */
-    public Map<Campaign, Integer> getNumberOfCampaigns() {
-        Map<Campaign, Integer> tCampaignMap = new HashMap<>();
-        for (Campaign tCampaign : mCampaigns) {
-            if (tCampaignMap.containsKey(tCampaign)) {
-                int tNumberOfCampaigns = tCampaignMap.get(tCampaign);
-                tCampaignMap.put(tCampaign, ++tNumberOfCampaigns);
-            } else {
-                tCampaignMap.put(tCampaign, 1);
-            }
+    public Map<Campaign, Integer> getCampaigns() {
+        Map<Campaign, Integer> tCampaignIntegerMap = new HashMap<>();
+        Campaign[] tCampaigns = mCampaignsInfo.getCampaigns();
+        for (int i = 0; i < tCampaigns.length; i++) {
+            tCampaignIntegerMap.put(tCampaigns[i], mCampaignNumbers[i]);
         }
-        return tCampaignMap;
+        return tCampaignIntegerMap;
     }
 
     /**
@@ -66,9 +62,19 @@ public class CampaignPlan implements KnapsackIf<CampaignPlan, Campaign> {
     @Override
     public CampaignPlan put(Campaign pCampaign) {
         CampaignPlan tCampaignPlan = new CampaignPlan(this);
-        tCampaignPlan.mCampaigns.add(pCampaign);
-        tCampaignPlan.mTotalRevenue += pCampaign.getRevenue();
+        addCampaign(tCampaignPlan, pCampaign);
         return tCampaignPlan;
+    }
+
+    private static void addCampaign(CampaignPlan pCampaignPlan, Campaign pCampaign) {
+        Campaign[] tCampaigns = pCampaignPlan.mCampaignsInfo.getCampaigns();
+        for (int i = 0; i < tCampaigns.length; i++) {
+            if (tCampaigns[i].equals(pCampaign)) {
+                pCampaignPlan.mCampaignNumbers[i]++;
+                break;
+            }
+        }
+        pCampaignPlan.mTotalRevenue += pCampaign.getRevenue();
     }
 
     @Override
@@ -84,13 +90,18 @@ public class CampaignPlan implements KnapsackIf<CampaignPlan, Campaign> {
         CampaignPlan that = (CampaignPlan) pObject;
 
         if (mTotalRevenue != that.mTotalRevenue) return false;
-        return !(mCampaigns != null ? !mCampaigns.equals(that.mCampaigns) : that.mCampaigns != null);
+        return !(mCampaignNumbers != null ? !mCampaignNumbers.equals(that.mCampaignNumbers) :
+                that.mCampaignNumbers != null);
     }
 
     @Override
     public int hashCode() {
-        int tResult = mCampaigns != null ? mCampaigns.hashCode() : 0;
+        int tResult = mCampaignNumbers != null ? mCampaignNumbers.hashCode() : 0;
         tResult = 31 * tResult + mTotalRevenue;
         return tResult;
+    }
+
+    public int[] getCampaignNumbers() {
+        return mCampaignNumbers;
     }
 }

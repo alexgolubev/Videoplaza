@@ -5,9 +5,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Tests on unbounded knapsack problem solution algorithm
@@ -15,56 +13,59 @@ import java.util.Set;
  */
 public class UnboundedKnapsackProblemSolverTest {
 
-    public Set<Item> mItems;
+    public Item[] mItems;
     public Knapsack mEmptyKnapsack;
     public UnboundedKnapsackProblemSolver<Item, Knapsack> mSolver = new UnboundedKnapsackProblemSolver();
 
 
     @Before
     public void before() {
-        mItems = new HashSet<>();
         mEmptyKnapsack = new Knapsack();
     }
 
     @Test
     public void testSolveOneItemTypeFullyPacked() throws Exception {
+        mItems = new Item[1];
         Item tItem = new Item(1, 1);
-        mItems.add(tItem);
+        mItems[0] = tItem;
 
-        Knapsack tSolution = mSolver.solve(mItems, 3, mEmptyKnapsack);
+        Knapsack tSolution = mSolver.solve(mItems, new Knapsack[4], mEmptyKnapsack);
         Assert.assertEquals(3, tSolution.getTotalValue());
     }
 
     @Test
     public void testSolveOneItemTypePartiallyPacked() throws Exception {
+        mItems = new Item[1];
         Item tItem = new Item(2, 1);
-        mItems.add(tItem);
+        mItems[0] = tItem;
 
-        Knapsack tSolution = mSolver.solve(mItems, 5, mEmptyKnapsack);
+        Knapsack tSolution = mSolver.solve(mItems, new Knapsack[6], mEmptyKnapsack);
         Assert.assertEquals(2, tSolution.getTotalValue());
     }
 
     @Test
     public void testSolveManyItemsTypeFullyPacked() throws Exception {
+        mItems = new Item[3];
         Item tItem = new Item(1, 10);
-        mItems.add(tItem);
+        mItems[0] = tItem;
         tItem = new Item(3, 31);
-        mItems.add(tItem);
+        mItems[1] = tItem;
         tItem = new Item(5, 53);
-        mItems.add(tItem);
+        mItems[2] = tItem;
 
-        Knapsack tSolution = mSolver.solve(mItems, 9, mEmptyKnapsack);
+        Knapsack tSolution = mSolver.solve(mItems, new Knapsack[10], mEmptyKnapsack);
         Assert.assertEquals(94, tSolution.getTotalValue()); // one of each type
     }
 
     @Test
     public void testSolveManyItemsTypePartiallyPacked() throws Exception {
+        mItems = new Item[2];
         Item tItem = new Item(3, 31);
-        mItems.add(tItem);
+        mItems[0] = tItem;
         tItem = new Item(5, 63);
-        mItems.add(tItem);
+        mItems[1] = tItem;
 
-        Knapsack tSolution = mSolver.solve(mItems, 9, mEmptyKnapsack);
+        Knapsack tSolution = mSolver.solve(mItems, new Knapsack[10], mEmptyKnapsack);
         Assert.assertEquals(94, tSolution.getTotalValue()); // one of each type
     }
 

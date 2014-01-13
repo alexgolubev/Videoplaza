@@ -10,18 +10,18 @@ import java.util.Set;
 public class CampaignsInfo {
 
     private int mInventory;
-    private Set<Campaign> mCampaigns;
+    private Campaign[] mCampaigns;
 
     public CampaignsInfo(int pInventory, Set<Campaign> pCampaigns) {
         mInventory = pInventory;
-        mCampaigns = pCampaigns;
+        mCampaigns = pCampaigns.toArray(new Campaign[pCampaigns.size()]);
     }
 
     public int getInventory() {
         return mInventory;
     }
 
-    public Set<Campaign> getCampaigns() {
+    public Campaign[] getCampaigns() {
         return mCampaigns;
     }
 }
