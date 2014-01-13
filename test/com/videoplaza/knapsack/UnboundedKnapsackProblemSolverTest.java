@@ -15,7 +15,7 @@ public class UnboundedKnapsackProblemSolverTest {
 
     public Item[] mItems;
     public Knapsack mEmptyKnapsack;
-    public UnboundedKnapsackProblemSolver<Item, Knapsack> mSolver = new UnboundedKnapsackProblemSolver();
+    public UnboundedKnapsackProblemSolver<Item, Knapsack> mSolver = new UnboundedKnapsackProblemSolver<>();
 
 
     @Before

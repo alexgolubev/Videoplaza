@@ -25,6 +25,9 @@ public class UnboundedKnapsackProblemSolver<I extends ItemIf, K extends Knapsack
     // No progress from the beginning
     private int mProgress = 0;
     boolean mIsSolving = false;
+    private int mMaxItemWeight;
+    private int mKnapsackSize;
+    private int mWeightGcd;
 
     /**
      * Solves unbounded knapsack problem for a given knapsack size and available items
@@ -34,35 +37,68 @@ public class UnboundedKnapsackProblemSolver<I extends ItemIf, K extends Knapsack
      * @return a knapsack full of items with maximum total value
      */
     public K solve(I[] pItems, K[] pKnapsackArray, K pEmptyKnapsack) {
-        mEmptyKnapsack = pEmptyKnapsack;
-        mResults = pKnapsackArray;
-        mItems = pItems;
-        int tKnapsackSize = pKnapsackArray.length - 1;
+        initialize(pItems, pKnapsackArray, pEmptyKnapsack);
         mIsSolving = true;
-        for (int i = 0; i < tKnapsackSize + 1; i++) {
+
+        for (int i = 0; i <= mKnapsackSize; i++) {
             synchronized (this) {
                 mProgress = i; // to keep track of the progress
             }
             calculateMaxValueKnapsack(i);
         }
         mIsSolving = false;
-        return mResults[tKnapsackSize];
+        return mResults[mKnapsackSize];
+    }
+
+    private void initialize(I[] pItems, K[] pKnapsackArray, K pEmptyKnapsack) {
+        mEmptyKnapsack = pEmptyKnapsack;
+        mItems = pItems;
+        calculateGcdOfWeights(pItems);
+        mResults = pKnapsackArray;
+        mKnapsackSize = (mResults.length - 1) / mWeightGcd;
+        mMaxItemWeight = calculateMaxItemWeight();
+    }
+
+    private void calculateGcdOfWeights(I[] pItems) {
+        int[] tWeights = new int[pItems.length];
+        for (int i = 0; i < tWeights.length; i++) {
+            tWeights[i] = pItems[i].getWeight();
+        }
+        mWeightGcd = GcdCalculator.calculateGcd(tWeights);
+    }
+
+    private int calculateMaxItemWeight() {
+        int tMax = 0;
+        for (I tItem : mItems) {
+            int tWeight = getAdjustedWeight(tItem);
+            if (tMax < tWeight &&
+                    // we do not care about items bigger than knapsack anyway.
+                    // But they can prevent the algorithm from cleaning unnecessary results.
+                    tWeight <= mKnapsackSize) {
+                tMax = tWeight;
+            }
+        }
+        return tMax;
+    }
+
+    private int getAdjustedWeight(I pItem) {
+        return pItem.getWeight() / mWeightGcd;
     }
 
     public double getProgress() {
         if (mIsSolving) {
             synchronized (this) {
-                return (double) mProgress / (mResults.length - 1) * 100;
+                return (double) mProgress / mKnapsackSize * 100;
             }
         }
         return 0.0;
     }
 
-    private void calculateMaxValueKnapsack(int pMaxWeight) {
+    private synchronized void calculateMaxValueKnapsack(int pMaxWeight) {
         // Creating a list for each of the variants when we take an item and get the best
         // weight distribution for a remainder of the knapsack. It is already calculated.
         for (I tItem : mItems) {
-            int tSmallerKnapsackMaxWeight = pMaxWeight - tItem.getWeight();
+            int tSmallerKnapsackMaxWeight = pMaxWeight - getAdjustedWeight(tItem);
             K tSmallerKnapsack;
             if (tSmallerKnapsackMaxWeight >= 0) {
                 tSmallerKnapsack = mResults[tSmallerKnapsackMaxWeight];
@@ -73,6 +109,11 @@ public class UnboundedKnapsackProblemSolver<I extends ItemIf, K extends Knapsack
         K tMaxValueKnapsack = getMaxValueKnapsack();
         // Caching the results. This is the essence of dynamic programming principle.
         mResults[pMaxWeight] = tMaxValueKnapsack;
+        // Cleaning the results that are not needed anymore to save some space
+        int tResultToClean = pMaxWeight - mMaxItemWeight;
+        if (tResultToClean >= 0) {
+            mResults[tResultToClean] = null;
+        }
         // Do not forget to clear the map
         mSmallerKnapsacks.clear();
     }
